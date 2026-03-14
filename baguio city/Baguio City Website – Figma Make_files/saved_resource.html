@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!-- saved from url=(0078)https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style id="reset-css"> @layer figreset,figoverridable,reset,theme,base,figutils,components,utilities;@layer figoverridable{:root{font-synthesis:none}}@layer figutils{:root{--banner-height:48px;--banner-height-v2:40px;--full-height-with-banner:calc(100dvh - var(--banner-height))}@media (max-width:600px){.banner-v2-container{left:0 !important;right:0 !important;margin:0 auto !important}}.wrapper-with-banner .min-h-screen{min-height:var(--full-height-with-banner)}.wrapper-with-banner .h-screen{height:var(--full-height-with-banner)}}</style><meta name="color-scheme" content="light dark"><style>
+  html, body, #container, #container > div {
+    height: 100%;
+  }
+</style><link rel="stylesheet" href="./index.css"></head><body>
+  <script>
+    window.messagePort = null
+
+    const allowedOrigins = [
+      'https://figma-gov.com',
+      'https://www.figma.com',
+      'https://staging.figma.com',
+      'https://devenv01.figma.engineering',
+      'https://local.figma.engineering:8443',
+      'http://localhost:9000',
+    ]
+
+    const allowedOriginPatterns = [
+      /^https:\/\/[a-z0-9-]+\.figdev\.systems:8443$/,
+      /^https:\/\/[a-z0-9-]+\.figdev\.systems$/,
+    ]
+
+    function isAllowedOrigin(origin) {
+      return allowedOrigins.includes(origin) || allowedOriginPatterns.some(p => p.test(origin))
+    }
+
+    window.addEventListener('message', (e) => {
+      function sendMessage(data) {
+        if (window.messagePort) {
+          window.messagePort.postMessage({ data })
+        }
+      }
+
+      if (isAllowedOrigin(e.origin)) {
+        if (e.data.type === 'iframe-init') {
+          window.messagePort = e.ports[0]
+          window.__PREVIEW_IFRAME_INITIAL_OPTIONS__ = e.data.previewIframeInitialOptions
+
+          sendMessage({
+            method: 'status',
+            state: 'init-received',
+            isReady: false
+          })
+
+          if (e.data.initScriptBlob) {
+            import(URL.createObjectURL(e.data.initScriptBlob))
+          } else {
+            const script = document.createElement('script')
+
+            script.onload = async () => {
+              function sendReady() {
+                sendMessage({
+                  method: 'status',
+                  state: 'ready',
+                  isReady: true
+                })
+              }
+
+              if (window.__iframeScriptExecuted__) {
+                sendReady()
+                return
+              }
+
+              let executeInterval = null
+              let timeout = null
+
+              const timeoutPromise = new Promise((resolve) => {
+                timeout = setTimeout(() => resolve('timeout'), 2000)
+              })
+
+              const scriptExecutedPromise = new Promise((resolve) => {
+                executeInterval = setInterval(() => {
+                  if (window.__iframeScriptExecuted__) {
+                    resolve('ready')
+                  }
+                }, 50)
+              })
+
+              const result = await Promise.race([timeoutPromise, scriptExecutedPromise])
+
+              clearTimeout(timeout)
+              clearInterval(executeInterval)
+
+              if (result === 'ready') {
+                sendReady()
+              } else {
+                sendMessage({
+                  method: 'status',
+                  state: 'script-timeout',
+                  isReady: false
+                })
+              }
+            }
+
+            script.onerror = (e) => {
+              sendMessage({
+                method: 'status',
+                state: 'script-load-error',
+                isReady: false,
+                error: e.message
+              })
+            }
+
+            script.src = e.data.initScriptURL
+            // https://sentry.io/answers/script-error/
+            script.crossOrigin = 'anonymous'
+            document.body.appendChild(script)
+          }
+        }
+      }
+    })
+  </script>
+
+
+
+<script src="./code_components_preview_iframe-f4fd20809e153e7b.min.js.br" crossorigin="anonymous"></script><div id="container"><div class="tailwind"><div id="fig-code-root" style="height: 100%;"><div class="min-h-screen flex flex-col"><header class="bg-emerald-800 text-white shadow-lg sticky top-0 z-50"><div class="container mx-auto px-4 py-4"><div class="flex items-center justify-between"><a class="flex items-center gap-2" href="https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/" data-discover="true"><img src="blob:https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/84e4054c-d201-435d-bec0-8620b71ff89e#filename=32fe8ae38b2e77b5c6111c70e1b52b47ed6baa4a.png" alt="Baguio Logo" class="h-12"></a><nav class="hidden md:flex gap-6"><a class="hover:text-emerald-200 transition-colors border-b-2 border-white" href="https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/" data-discover="true">Home</a><a class="hover:text-emerald-200 transition-colors " href="https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/culture-history" data-discover="true">Culture &amp; History</a><a class="hover:text-emerald-200 transition-colors " href="https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/attractions" data-discover="true">Tourist Attractions</a><a class="hover:text-emerald-200 transition-colors " href="https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/food" data-discover="true">Food &amp; Resto</a></nav><div class="md:hidden"><select class="bg-emerald-700 text-white px-3 py-2 rounded border-none"><option value="/">Home</option><option value="/culture-history">Culture &amp; History</option><option value="/attractions">Tourist Attractions</option><option value="/food">Food &amp; Resto</option></select></div></div></div></header><main class="flex-1"><div><div class="relative h-[600px] overflow-hidden"><img src="blob:https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/9e060d3e-10d6-4b84-8968-3de637e6af01#filename=3ce2b13013bf8e1736a4b4ed786080e33490c899.png" alt="Baguio City Collage" class="w-full h-full object-cover"><div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center"><div class="text-center text-white px-4"><h1 class="text-5xl md:text-7xl mb-4">Welcome to Baguio City</h1><p class="text-xl md:text-2xl max-w-3xl mx-auto">The Summer Capital of the Philippines</p></div></div></div><section class="container mx-auto px-4 py-16"><div class="max-w-4xl mx-auto text-center"><h2 class="text-4xl mb-6">Discover Baguio</h2><p class="text-lg text-gray-700 leading-relaxed mb-6">Welcome to Baguio City — a city where history, culture, and stories come alive! Known as the Summer Capital of the Philippines, Baguio charms visitors with its cool mountain breeze, breathtaking views, and rich traditions that make every visit unforgettable.</p><p class="text-lg text-gray-700 leading-relaxed mb-6">Baguio was developed as a hill station during the American era, with landmarks like The Mansion and Burnham Park still standing today. Its culture comes alive through locals who keep traditional crafts like weaving, woodcarving, and painting—blending them with modern creativity.</p><p class="text-lg text-gray-700 leading-relaxed">Baguio is where history and modern life come together! Discover the stories hidden in every corner while soaking up the city's rich culture and colorful energy.</p></div></section><section class="bg-gray-50 py-16"><div class="container mx-auto px-4"><h2 class="text-4xl text-center mb-12">Explore Baguio</h2><div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto"><a class="group" href="https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/culture-history" data-discover="true"><div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"><div class="h-48 bg-emerald-700 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mountain w-24 h-24 text-white"><path d="m8 3 4 8 5-5 5 15H2L8 3z"></path></svg></div><div class="p-6"><h3 class="text-2xl mb-3 group-hover:text-emerald-700 transition-colors">Culture &amp; History</h3><p class="text-gray-600">Explore Baguio's rich heritage from its American era development to vibrant festivals</p></div></div></a><a class="group" href="https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/attractions" data-discover="true"><div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"><div class="h-48 bg-emerald-600 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trees w-24 h-24 text-white"><path d="M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z"></path><path d="M7 16v6"></path><path d="M13 19v3"></path><path d="M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5"></path></svg></div><div class="p-6"><h3 class="text-2xl mb-3 group-hover:text-emerald-700 transition-colors">Tourist Attractions</h3><p class="text-gray-600">Visit famous landmarks and enjoy breathtaking mountain views</p></div></div></a><a class="group" href="https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/food" data-discover="true"><div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"><div class="h-48 bg-emerald-500 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flower w-24 h-24 text-white"><circle cx="12" cy="12" r="3"></circle><path d="M12 16.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 1 1 12 7.5a4.5 4.5 0 1 1 4.5 4.5 4.5 4.5 0 1 1-4.5 4.5"></path><path d="M12 7.5V9"></path><path d="M7.5 12H9"></path><path d="M16.5 12H15"></path><path d="M12 16.5V15"></path><path d="m8 8 1.88 1.88"></path><path d="M14.12 9.88 16 8"></path><path d="m8 16 1.88-1.88"></path><path d="M14.12 14.12 16 16"></path></svg></div><div class="p-6"><h3 class="text-2xl mb-3 group-hover:text-emerald-700 transition-colors">Food &amp; Resto</h3><p class="text-gray-600">Taste local delicacies made from fresh vegetables and strawberries</p></div></div></a></div></div></section><section class="container mx-auto px-4 py-16"><div class="bg-emerald-700 text-white rounded-lg p-12 text-center"><h2 class="text-4xl mb-4">Start Your Adventure</h2><p class="text-xl mb-8 max-w-2xl mx-auto">Experience the cool mountain breeze, vibrant culture, and unforgettable memories in Baguio City</p><a class="inline-block bg-white text-emerald-700 px-8 py-3 rounded-lg hover:bg-emerald-50 transition-colors" href="https://fcb7f9f6-ab58-4319-ac56-f29ade21ec26-v2-figmaiframepreview.figma.site/culture-history" data-discover="true">Learn More</a></div></section></div></main><footer class="bg-emerald-900 text-white py-6 mt-12"><div class="container mx-auto px-4 text-center"><p class="text-emerald-200">Baguio City - The Summer Capital of the Philippines</p><p class="text-sm text-emerald-300 mt-2">© 2026 Discover Baguio. All rights reserved.</p></div></footer></div></div></div></div></body></html>
